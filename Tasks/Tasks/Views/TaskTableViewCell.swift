@@ -12,6 +12,35 @@ class TaskTableViewCell: UITableViewCell {
 
     // MARK: - Properties
     
-    // MARK: - IBOutlets
+    static let reuseIdentifier = "TaskCell"
+    var task: Task? {
+        didSet {
+            updateViews()
+        }
+    }
     
+    // MARK: - IBOutlets
+    @IBOutlet weak var taskNameLabel: NSLayoutConstraint!
+    @IBOutlet weak var completedButton: UIButton!
+    // MARK: - Actions
+    @IBAction func toggleComplete(_ sender: UIButton) {
+        guard let task = task else {return}
+        
+        task.complete.toggle()
+        completedButton.setImage((task.complete) ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "square"), for: .normal)
+        
+        
+        do {
+            try CoreDataStack.shared.mainContext.save()
+        } catch {
+            NSLog("\(error)")
+        }
+    }
+    
+    
+    private func updateViews() {
+        guard let task = task else { return }
+        taskNameLabel.text = task.name
+        completedButton.setImage((task.complete) ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "square"), for: .normal)
+    }
 }

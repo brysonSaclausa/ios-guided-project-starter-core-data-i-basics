@@ -7,31 +7,51 @@
 //
 
 import UIKit
+import CoreData
 
 class TasksTableViewController: UITableViewController {
 
     // MARK: - Properties
+    // this is not a good, efficient way to do this as the t
+    var tasks: [Task] {
+        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        let context = CoreDataStack.shared.mainContext
+            do {
+                return try context.fetch(fetchRequest)
+            } catch {
+                NSLog("Error fetching tasks: \(error)")
+                return []
+            }
+        }
+
     
     
     // MARK: - IBOutlets
     
     
     // MARK: - View Lifecycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        tableView.reloadData()
+    }
 
     
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return tasks.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.reuseIdentifier, for: indexPath) as? TaskTableViewCell else { fatalError("Can't dequeue cell of type \(TaskTableViewCell.reuseIdentifier)") }
+
+        cell.task = tasks[indexPath.row]
+            return cell
+        }
 
         // Configure the cell...
-
-        return cell
-    }
+   
 
     /*
     // Override to support editing the table view.
