@@ -20,7 +20,7 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     // MARK: - IBOutlets
-    @IBOutlet weak var taskNameLabel: NSLayoutConstraint!
+    @IBOutlet weak var taskNameLabel: UILabel!
     @IBOutlet weak var completedButton: UIButton!
     // MARK: - Actions
     @IBAction func toggleComplete(_ sender: UIButton) {
